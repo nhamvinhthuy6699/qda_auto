@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=+ofwPsV28sKOk1oWcNGe0OaJ+SDMmm6BO4AOCXPZNd4AtqQ/f+Al2JOVFQFa9VwRVIeW1BVAr7Q7Z2jI0Yd2pasARNmjJNNlOoWP/+9P5uBTuR80fOXzHf9yngFQU/hrP0DOcN9JWkfLaR6TuJNxw5CoKcvSUeRstFVljojV3ok=-->
+<!--_SIG=2ndRV4qAynEvUOM4fz00YGxHpvdcagN9qhW18OxbVZLpMQC58qKBwZxvrBKjWrDd7ZCVk+MTZjmwoGExX5b0MCPdSpq+BLZEybc3DQsuqyABPtKYyGIFE8NDHYGam5Kl9hIC87B0u2nu1aaWJsGWz8ZUF82XsXEZXtTEJFlAn44=-->
+<Package Id="GrooveMUI.en-us" Type="MSI" Path="GrooveMUI.MSI" Version="1.0" ProductCode="{90160000-00BA-0409-1000-0000000FF1CE}" MSIVersion="16.0.4266.1001" ProductLanguage="1033" Platform="x64">
+	<Feature Id="GrooveFilesIntl_1033" Cost="9031837">
+		<OptionRef Id="GrooveFiles2"/>
+	</Feature>
+	<Feature Id="SetupXmlFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="MsoInstalledPackagesScopedIntl_1033" Cost="0">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="SetupControllerFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="Gimme_OnDemandData" Cost="0">
+		<OptionRef Id="Gimme_OnDemandData"/>
+	</Feature>
+</Package>

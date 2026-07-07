@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=h5kqXVR0ynshNR3J5knOBFiNbfsKXOgP+gQrmkKJ1rS+j8sAtM2OkUFPWKYziQukoFIy0xwQnO3bES+AmfiuKzycvsVX5N3KqGtP6s9DvWMG0Ox5/MBvYCod/t0wucngcrOG4uzf+mpIIJnl4HZ229a75HcK8/YxbrBO6ZCA1nM=-->
+<!--_SIG=CqcYFIjdoVpxUp9Ov5cLzon9GA53tnYm0D8W3L+OyfM7ecTJrf4217nIhhTuprrW4I/MEnXzWf8lD1Zd2cU0Z1+pLx24S6Fb6KP3+iSn4cyK0bzLZVOW5fLszRQEkUGPXO2oo4ADJjcnFl3NZtqZUBH95yhkGjDCMvRwaLY+SpM=-->
+<Setup Id="OSM.en-us" Type="AddOn" Keyword="OSMMUI" Culture="en-us">
+	<Option Id="AlwaysInstalled" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="yes" Hidden="yes"/>
+	<Option Id="Gimme_OnDemandData" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="yes" Hidden="yes"/>
+	<Option Id="ProductFiles" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="no">
+		<Option Id="TOOLSFiles" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="no">
+			<Option Id="OsmSKUMain" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="yes" PreReq="IsProPlus;IsStandard;IsMondo;IsAccess;IsExcel;IsInfoPath;IsOneNote;IsOutlook;IsPowerPoint;IsPrjPro;IsPrjStd;IsPublisher;IsVisPro;IsVisStd;IsWord;IsProPlusR;IsStandardR;IsAccessR;IsExcelR;IsInfoPathR;IsOneNoteR;IsOutlookR;IsPowerPointR;IsPrjProR;IsPrjStdR;IsPublisherR;IsVisProR;IsVisStdR;IsWordR;IsC2RPackageOnMachineOSM"/>
+		</Option>
+	</Option>
+	<PackageRef Path="OSMMUI.xml"/>
+	<LocalCache DownloadCode="{90160000-00E1-0409-1000-0000000FF1CE}" SkuComponentDirectory="OSM.en-us">
+		<File Id="OSMMUI.xml" MD5="EBF7F98472B429CDFA1C392D5D270519" Size="0" RelativeCachePath="OSMMUI.xml" RelativeSourcePath="OSMMUI.xml"/>
+		<File Id="OSMMUI.msi" MD5="22E717B416733E66FCB1944AF74968B9" Size="1552384" RelativeCachePath="OSMMUI.msi" RelativeSourcePath="OSMMUI.msi"/>
+		<File Id="OSMMUI.cab" MD5="AFBC91DCE98C226F1C4FB88EC7ED054C" Size="16813" RelativeCachePath="OSMMUI.cab" RelativeSourcePath="OSMMUI.cab"/>
+		<File Id="Setup.xml" MD5="" Size="" RelativeCachePath="Setup.xml" RelativeSourcePath="Setup.xml"/>
+	</LocalCache>
+</Setup>

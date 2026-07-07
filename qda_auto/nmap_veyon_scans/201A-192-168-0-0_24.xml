@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/mywork/qda_auto/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Mon Jul  6 13:42:28 2026 as: C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24 -->
+<nmaprun scanner="nmap" args="C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24" start="1783320148" startstr="Mon Jul  6 13:42:28 2026" version="7.99" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<taskprogress task="ARP Ping Scan" time="1783320149" percent="2.16" remaining="0" etc="1783320149"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.1" addrtype="ipv4"/>
+<address addr="5C:92:5E:CC:13:30" addrtype="mac" vendor="Zioncom Electronics (Shenzhen)"/>
+<hostnames>
+<hostname name="TOTOLINK.lan" type="PTR"/>
+</hostnames>
+<times srtt="12500" rttvar="10750" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.73" addrtype="ipv4"/>
+<address addr="E8:FB:1C:BB:B0:3D" addrtype="mac" vendor="AzureWave Technology"/>
+<hostnames>
+<hostname name="LAPTOP-AO44FHN5.lan" type="PTR"/>
+</hostnames>
+<times srtt="56000" rttvar="56000" to="280000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.75" addrtype="ipv4"/>
+<address addr="C8:7F:54:54:1F:DF" addrtype="mac" vendor="ASUSTek Computer"/>
+<hostnames>
+<hostname name="DESKTOP-8CV14R6.lan" type="PTR"/>
+</hostnames>
+<times srtt="8000" rttvar="8000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.117" addrtype="ipv4"/>
+<address addr="0A:31:59:02:8E:C5" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="91000" rttvar="91000" to="455000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.167" addrtype="ipv4"/>
+<address addr="AC:A7:04:24:CF:80" addrtype="mac" vendor="Espressif"/>
+<hostnames>
+</hostnames>
+<times srtt="118000" rttvar="118000" to="590000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.176" addrtype="ipv4"/>
+<address addr="D4:AB:61:F8:5F:B6" addrtype="mac" vendor="Intel Corporate"/>
+<hostnames>
+<hostname name="DESKTOP-5FVHR4C.lan" type="PTR"/>
+</hostnames>
+<times srtt="84000" rttvar="84000" to="420000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.203" addrtype="ipv4"/>
+<address addr="C8:7F:54:54:20:EF" addrtype="mac" vendor="ASUSTek Computer"/>
+<hostnames>
+<hostname name="SOC453-TSQ-T1-NQTuan.lan" type="PTR"/>
+</hostnames>
+<times srtt="11000" rttvar="11000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.204" addrtype="ipv4"/>
+<address addr="C8:7F:54:54:20:F0" addrtype="mac" vendor="ASUSTek Computer"/>
+<hostnames>
+<hostname name="SOC453-TSQ-T1-NCPT2.lan" type="PTR"/>
+</hostnames>
+<times srtt="10000" rttvar="10000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.208" addrtype="ipv4"/>
+<address addr="4C:BC:E9:EB:65:26" addrtype="mac" vendor="LG Innotek"/>
+<hostnames>
+</hostnames>
+<times srtt="77893" rttvar="79966" to="397757"/>
+</host>
+<host><status state="up" reason="localhost-response" reason_ttl="0"/>
+<address addr="192.168.0.228" addrtype="ipv4"/>
+<hostnames>
+<hostname name="host.docker.internal" type="PTR"/>
+</hostnames>
+</host>
+<runstats><finished time="1783320151" timestr="Mon Jul  6 13:42:31 2026" summary="Nmap done at Mon Jul  6 13:42:31 2026; 256 IP addresses (10 hosts up) scanned in 3.70 seconds" elapsed="3.70" exit="success"/><hosts up="10" down="246" total="256"/>
+</runstats>
+</nmaprun>

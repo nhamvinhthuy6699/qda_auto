@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=/oe2C9PjYRvs3alpF6n6UAK/4wscFWUjP9+/05sRPT0GZ0ftC3BgB885iKmtECSPx5HIFcaE4Rs/BjdLcukyASq4B68AGwoAEKWxI4Zd0SQts5TsZQJUoF/tUeX3TO8M/SQCSTqEnLoPpBtu8x5dLt/9BmWJbLzFl40D4bW0fAE=-->
+<!--_SIG=o1s6z/rJt5pBkP2cu8wtRG7BsXlmn9W6tPUAKvnUegUQ1hoieC8SDzNTAGFVQJfuu9uD7hKJYu4t0WtJzqhCOEgUN8UBPVsVeXdiIccnBE/pK8tcOAlZRmBxPo7Ff+Avp166sT12YMYBLddNsT0fahMhvtkCK2vGttJf0HKPDws=-->
+<Package Id="AccessMUI.en-us" Type="MSI" Path="AccessMUI.MSI" Version="1.0" ProductCode="{90160000-0015-0409-1000-0000000FF1CE}" MSIVersion="16.0.4266.1001" ProductLanguage="1033" Platform="x64">
+	<Feature Id="Gimme_OnDemandData" Cost="0">
+		<OptionRef Id="Gimme_OnDemandData"/>
+	</Feature>
+	<Feature Id="AccessTemplatesIntl_1033" Cost="1737901">
+		<OptionRef Id="AccessTemplatesIntl"/>
+	</Feature>
+	<Feature Id="SetupXmlFiles" Cost="234">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="AccessHelpFilesIntl_1033" Cost="4002685">
+		<OptionRef Id="AccessHelpFiles"/>
+	</Feature>
+	<Feature Id="ACCESSFilesIntl_1033" Cost="1812184">
+		<OptionRef Id="ACCESSFiles"/>
+	</Feature>
+	<Feature Id="SetupControllerFiles" Cost="234">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="ACCESSNonBootFilesIntl_1033" Cost="5549954">
+		<OptionRef Id="ACCESSFiles"/>
+	</Feature>
+	<Feature Id="MsoInstalledPackagesScopedIntl_1033" Cost="0">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+</Package>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=W3jpGrB6OnRz94l0Uhd7F/o02gMcM3+ZxZeJ4uxIld4SHph3AZfNMOLw0FNaD5CljsWM/+W2es+DliSyrqey1DReNJwXjCc2Er9Onvm8rO1TeFHoF8N5jxW0OGG5gGbpHcBb24pFGu5VzQ8jQSiGfU4rWhM6oIQ0xGwhIIS2aEw=-->
+<!--_SIG=AsO8etLcY5RiLRcGJTEShzIeeVgFFb9ElSROhICvvZM9Pa2bJ2Ncvtp35asd5pgIAYrZ/pMYzeHUIfuvk7SWHNztXkE31daLbM6+5BABu1tRdGl9y6nEKKIeqwWKNgQL2kS/CKD/bJ8xfKjkMz6QbVxmqfd900nF2cVeRvYxHJs=-->
+<Setup Id="Word.en-us" Type="AddOn" Keyword="WordMUI" Culture="en-us">
+	<Option Id="AlwaysInstalled" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="yes" Hidden="yes"/>
+	<Option Id="Gimme_OnDemandData" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="yes" Hidden="yes"/>
+	<Option Id="ProductFiles" DefaultState="Local" DisallowAbsent="yes" DisallowAdvertise="no">
+		<Option Id="WORDFiles" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="no">
+			<Option Id="WordBibliographyFiles" DefaultState="FollowParent" DisallowAbsent="no" DisallowAdvertise="yes" Hidden="yes"/>
+			<Option Id="WORDHelpFiles" DefaultState="FollowParent" DisallowAbsent="yes" DisallowAdvertise="no" Hidden="yes"/>
+			<Option Id="WordQuickFormatsFiles" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="no"/>
+			<Option Id="WORDDocumentTemplates" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="yes" Hidden="yes">
+				<OptionDependency Lead="WORDFiles"/>
+			</Option>
+			<Option Id="WordPdfi" DefaultState="Local" DisallowAbsent="no" DisallowAdvertise="yes" Hidden="yes">
+				<OptionDependency Lead="WORDFiles"/>
+			</Option>
+		</Option>
+		<Option Id="WORDSharedFiles" DefaultState="Absent" DisallowAbsent="no" DisallowAdvertise="no" Hidden="yes">
+			<OptionDependency Lead="OUTLOOKFiles"/>
+			<OptionDependency Lead="WORDFiles"/>
+		</Option>
+		<Option Id="WhiteRabbitHidden" DefaultState="Absent" DisallowAbsent="no" DisallowAdvertise="yes" Hidden="yes">
+			<OptionDependency Lead="WORDFiles"/>
+			<OptionDependency Lead="EXCELFiles"/>
+			<OptionDependency Lead="OUTLOOKFiles"/>
+		</Option>
+	</Option>
+	<PackageRef Path="WordMUI.xml"/>
+	<LocalCache DownloadCode="{90160000-001B-0409-1000-0000000FF1CE}" SkuComponentDirectory="Word.en-us">
+		<File Id="WordMUI.xml" MD5="56B8C81E1ED0C32DB40A62C1BD46AC20" Size="0" RelativeCachePath="WordMUI.xml" RelativeSourcePath="WordMUI.xml"/>
+		<File Id="WordMUI.msi" MD5="F664F9796B52310B0CD83F8D96B8B9E8" Size="3063808" RelativeCachePath="WordMUI.msi" RelativeSourcePath="WordMUI.msi"/>
+		<File Id="WordLR.cab" MD5="24DBEF551E119A80DE2CB1CF700C11D0" Size="10081327" RelativeCachePath="WordLR.cab" RelativeSourcePath="WordLR.cab"/>
+		<File Id="Setup.xml" MD5="" Size="" RelativeCachePath="Setup.xml" RelativeSourcePath="Setup.xml"/>
+	</LocalCache>
+</Setup>

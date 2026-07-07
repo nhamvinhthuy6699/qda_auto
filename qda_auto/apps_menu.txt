@@ -1,0 +1,41 @@
+# FORMAT:
+# ID|DISPLAY_NAME|TYPE|SOURCE|ARGS_OR_DEST
+#
+# TYPE hay dùng:
+# EXE         = chạy EXE, tham số lấy ở cột 5. Nếu cột 5 trống thì chạy không tham số.
+# EXE_SILENT  = chạy EXE với tham số chung /S /v/qn
+# MSI         = chạy msiexec /i
+# COPY        = copy file
+# FOLDER      = copy thư mục
+# BAT         = chạy BAT
+# PS1         = chạy PS1
+# ZIP         = giải nén ZIP
+# WINGET      = cài winget
+#
+# Đích COPY:
+# PUBLIC_DESKTOP
+# ADMIN_DESKTOP
+# TTCNTTNN_DESKTOP
+# TEMP
+# hoặc đường dẫn cụ thể, ví dụ C:\APP_DEPLOY\QDA2026_BQP.seb
+
+1|Safe Exam Browser 2.4.1|EXE_SILENT|SafeExamBrowser2.4.1.exe|
+2|QDA2026_BQP SEB|COPY|QDA2026_BQP.seb|PUBLIC_DESKTOP
+3|Copy UniKey to Desktop|COPY|UniKeyNT.exe|PUBLIC_DESKTOP
+4|Copy Office 2016 Source|FOLDER|OFFICE2016|C:\APP_DEPLOY\INSTALL\OFFICE2016
+5|Uninstall Office 2016|BAT|uninstall_office2016.bat|
+6|Install Office 2016|BAT|install_office2016.bat|
+7|Copy ODT Tool|FOLDER|ODT|C:\APP_DEPLOY\INSTALL\ODT
+8|Remove Microsoft 365 By ODT|BAT|remove_m365_odt.bat|
+9|Install WinRAR|EXE|winrar-x64-722.exe|/S
+10|Fix WinRAR Right Click Menu|BAT|fix_winrar_right_click.bat|
+11|Copy Veyon Source|FOLDER|VEYON|C:\APP_DEPLOY\INSTALL\VEYON
+12|Install Veyon Client|BAT|install_veyon_client.bat|
+
+# Ví dụ EXE khác cũng dùng /S /v/qn:
+# 3|App Khac Silent|EXE_SILENT|AppKhac.exe|
+
+# Ví dụ EXE dùng tham số riêng:
+# 4|App Inno Silent|EXE|AppInno.exe|/VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+# 5|App Quiet|EXE|AppQuiet.exe|/quiet /norestart
+# 6|App Chay Thuong|EXE|AppThuong.exe|

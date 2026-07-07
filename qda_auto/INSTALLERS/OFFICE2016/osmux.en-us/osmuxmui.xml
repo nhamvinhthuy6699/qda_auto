@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=kfeKqUyHoAyiJFpmIG8PNpA0gWBUdP0X+DOGANuojLmZIpcLh3OR8enhXpz2gj2yJeEJo3pUwL7CwNLKZ2GRUGNf0CmxSMhf4fJwOabn3kgbRMgGp+3SgF8q8A1QLiDksBPysNzT/PJBhKX5dtsGdPnpcKTL4uFed2ZCDj8rnGQ=-->
+<!--_SIG=ucgP5TeDMJybG6d6EnK5xm+iij9qpQVViQWTJjhG+HCMT+legYk+Fkv7urPR02kEJ5/RiD0eyMUFIDBaHKPaKCkON6i8IrRbrOuDXh9B7eX2NVLSSkuEhA7DFYIqiqFGa3jqZqaCk6JObt2NGIDOjHvg4ej+gQRSe6qRvqRf/Gk=-->
+<Package Id="OSMUXMUI.en-us" Type="MSI" Path="OSMUXMUI.MSI" Version="1.0" ProductCode="{90160000-00E2-0409-1000-0000000FF1CE}" MSIVersion="16.0.4266.1001" ProductLanguage="1033" Platform="x64">
+	<Feature Id="OsmSKURedistPackage64Intl_1033" Cost="4362240">
+		<OptionRef Id="OsmSKUAdminUX"/>
+	</Feature>
+	<Feature Id="OsmClientUXResourceIntl_1033" Cost="61184">
+		<OptionRef Id="OsmSKUClientUX"/>
+	</Feature>
+	<Feature Id="Gimme_OnDemandData" Cost="0">
+		<OptionRef Id="Gimme_OnDemandData"/>
+	</Feature>
+	<Feature Id="OsmAdminUXResourceIntl_1033" Cost="72823">
+		<OptionRef Id="OsmSKUAdminUX"/>
+	</Feature>
+	<Feature Id="SetupXmlFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="OsmSKURedistPackageIntl_1033" Cost="4136960">
+		<OptionRef Id="OsmSKUAdminUX"/>
+	</Feature>
+	<Feature Id="SetupControllerFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="MsoInstalledPackagesScopedIntl_1033" Cost="0">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+</Package>

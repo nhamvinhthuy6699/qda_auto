@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--_MODULUS=R3cWYhPZvDlLXtBxhN2B1/Unci5RPipPIf+JvDiSbYIe8XzPsUBVO2a6kjgTRs1Ykulm8lvfLABtTNh5q/mZzwX854c3iWVoZ6qmChDdgLeKoz0CQEjRKR11E/alE68qaku+YYyt43RWynPa/wXwxKyZKWtkqj3mYbTNV/nPChg=-->
+<!--_SIG=gp7PLTaW8wzjWPAucuB0T0M9Pa7UoRpjZ1t0LlcdPkzYFLKtg+C+vm8ykeeT6CLExzLT0TPafZ22o+NehyUypXPTHCuiJWipo0FlO2TEe0Oco2kHHVCg0GxxvTkTAYINtzUNjAI3/BbNfZsNZMG9dFZle12Lrg45XvHFrfryuH8=-->
+<Package Id="OSMMUI.en-us" Type="MSI" Path="OSMMUI.MSI" Version="1.0" ProductCode="{90160000-00E1-0409-1000-0000000FF1CE}" MSIVersion="16.0.4266.1001" ProductLanguage="1033" Platform="x64">
+	<Feature Id="OsmInvAgentResourceIntl_1033" Cost="6708">
+		<OptionRef Id="OsmSKUMain"/>
+	</Feature>
+	<Feature Id="SetupXmlFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="MsoInstalledPackagesScopedIntl_1033" Cost="0">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="SetupControllerFiles" Cost="468">
+		<OptionRef Id="AlwaysInstalled"/>
+	</Feature>
+	<Feature Id="Gimme_OnDemandData" Cost="0">
+		<OptionRef Id="Gimme_OnDemandData"/>
+	</Feature>
+</Package>
