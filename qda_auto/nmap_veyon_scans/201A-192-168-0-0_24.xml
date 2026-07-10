@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///C:/mywork/qda_auto/Nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.99 scan initiated Mon Jul  6 13:42:28 2026 as: C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24 -->
-<nmaprun scanner="nmap" args="C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24" start="1783320148" startstr="Mon Jul  6 13:42:28 2026" version="7.99" xmloutputversion="1.05">
+<!-- Nmap 7.99 scan initiated Wed Jul  8 16:08:07 2026 as: C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24 -->
+<nmaprun scanner="nmap" args="C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-0-0_24.xml 192.168.0.0/24" start="1783501687" startstr="Wed Jul  8 16:08:07 2026" version="7.99" xmloutputversion="1.05">
 <verbose level="0"/>
 <debugging level="0"/>
-<taskprogress task="ARP Ping Scan" time="1783320149" percent="2.16" remaining="0" etc="1783320149"/>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.1" addrtype="ipv4"/>
 <address addr="5C:92:5E:CC:13:30" addrtype="mac" vendor="Zioncom Electronics (Shenzhen)"/>
 <hostnames>
 <hostname name="TOTOLINK.lan" type="PTR"/>
 </hostnames>
-<times srtt="12500" rttvar="10750" to="100000"/>
+<times srtt="9000" rttvar="9000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.2" addrtype="ipv4"/>
+<address addr="D0:81:7A:A7:F9:0A" addrtype="mac" vendor="Apple"/>
+<hostnames>
+</hostnames>
+<times srtt="92750" rttvar="73000" to="384750"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.73" addrtype="ipv4"/>
@@ -20,7 +26,7 @@
 <hostnames>
 <hostname name="LAPTOP-AO44FHN5.lan" type="PTR"/>
 </hostnames>
-<times srtt="56000" rttvar="56000" to="280000"/>
+<times srtt="84000" rttvar="84000" to="420000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.75" addrtype="ipv4"/>
@@ -28,21 +34,14 @@
 <hostnames>
 <hostname name="DESKTOP-8CV14R6.lan" type="PTR"/>
 </hostnames>
-<times srtt="8000" rttvar="8000" to="100000"/>
-</host>
-<host><status state="up" reason="arp-response" reason_ttl="0"/>
-<address addr="192.168.0.117" addrtype="ipv4"/>
-<address addr="0A:31:59:02:8E:C5" addrtype="mac"/>
-<hostnames>
-</hostnames>
-<times srtt="91000" rttvar="91000" to="455000"/>
+<times srtt="13000" rttvar="13000" to="100000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.167" addrtype="ipv4"/>
 <address addr="AC:A7:04:24:CF:80" addrtype="mac" vendor="Espressif"/>
 <hostnames>
 </hostnames>
-<times srtt="118000" rttvar="118000" to="590000"/>
+<times srtt="101343" rttvar="77625" to="411843"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.176" addrtype="ipv4"/>
@@ -50,7 +49,7 @@
 <hostnames>
 <hostname name="DESKTOP-5FVHR4C.lan" type="PTR"/>
 </hostnames>
-<times srtt="84000" rttvar="84000" to="420000"/>
+<times srtt="76000" rttvar="76000" to="380000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.203" addrtype="ipv4"/>
@@ -58,7 +57,7 @@
 <hostnames>
 <hostname name="SOC453-TSQ-T1-NQTuan.lan" type="PTR"/>
 </hostnames>
-<times srtt="11000" rttvar="11000" to="100000"/>
+<times srtt="5000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.204" addrtype="ipv4"/>
@@ -66,21 +65,21 @@
 <hostnames>
 <hostname name="SOC453-TSQ-T1-NCPT2.lan" type="PTR"/>
 </hostnames>
-<times srtt="10000" rttvar="10000" to="100000"/>
+<times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.0.208" addrtype="ipv4"/>
 <address addr="4C:BC:E9:EB:65:26" addrtype="mac" vendor="LG Innotek"/>
 <hostnames>
 </hostnames>
-<times srtt="77893" rttvar="79966" to="397757"/>
+<times srtt="95000" rttvar="95000" to="475000"/>
 </host>
 <host><status state="up" reason="localhost-response" reason_ttl="0"/>
-<address addr="192.168.0.228" addrtype="ipv4"/>
+<address addr="192.168.0.229" addrtype="ipv4"/>
 <hostnames>
-<hostname name="host.docker.internal" type="PTR"/>
+<hostname name="DESKTOP-ULLRKQF.lan" type="PTR"/>
 </hostnames>
 </host>
-<runstats><finished time="1783320151" timestr="Mon Jul  6 13:42:31 2026" summary="Nmap done at Mon Jul  6 13:42:31 2026; 256 IP addresses (10 hosts up) scanned in 3.70 seconds" elapsed="3.70" exit="success"/><hosts up="10" down="246" total="256"/>
+<runstats><finished time="1783501690" timestr="Wed Jul  8 16:08:10 2026" summary="Nmap done at Wed Jul  8 16:08:10 2026; 256 IP addresses (10 hosts up) scanned in 2.71 seconds" elapsed="2.71" exit="success"/><hosts up="10" down="246" total="256"/>
 </runstats>
 </nmaprun>

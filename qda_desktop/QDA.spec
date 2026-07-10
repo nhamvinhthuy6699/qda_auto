@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['qda_app.py'],
+    ['C:\\mywork\\qda_desktop\\qda_app.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -35,4 +35,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    uac_admin=True,
+    icon=['C:\\mywork\\assets\\qda.ico'],
 )

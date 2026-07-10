@@ -1,263 +1,254 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///C:/mywork/qda_auto/Nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.99 scan initiated Wed Jul  1 16:03:07 2026 as: C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-11-0_24.xml 192.168.11.0/24 -->
-<nmaprun scanner="nmap" args="C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-11-0_24.xml 192.168.11.0/24" start="1782896587" startstr="Wed Jul  1 16:03:07 2026" version="7.99" xmloutputversion="1.05">
+<!-- Nmap 7.99 scan initiated Fri Jul 10 13:57:00 2026 as: C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-11-0_24.xml 192.168.11.0/24 -->
+<nmaprun scanner="nmap" args="C:\\mywork\\qda_auto\\Nmap\\nmap.exe -sn -PS445 -&#45;stats-every 5s -oX C:\\mywork\\qda_auto\\nmap_veyon_scans\\201A-192-168-11-0_24.xml 192.168.11.0/24" start="1783666620" startstr="Fri Jul 10 13:57:00 2026" version="7.99" xmloutputversion="1.05">
 <verbose level="0"/>
 <debugging level="0"/>
-<taskprogress task="Ping Scan" time="1782896588" percent="77.73" remaining="1" etc="1782896588"/>
+<taskprogress task="Parallel DNS resolution of 40 hosts." time="1783666625" percent="0.00"/>
+<taskprogress task="Parallel DNS resolution of 40 hosts." time="1783666629" percent="0.00"/>
+<taskprogress task="Parallel DNS resolution of 40 hosts." time="1783666630" percent="0.00"/>
+<taskprogress task="Parallel DNS resolution of 40 hosts." time="1783666635" percent="50.00" remaining="14" etc="1783666649"/>
 <host><status state="up" reason="conn-refused" reason_ttl="0"/>
 <address addr="192.168.11.1" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.53" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.86" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="6000" rttvar="6000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.87" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="6000" rttvar="6000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.88" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="6000" rttvar="6000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.89" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.90" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.91" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.92" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.93" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="5000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.94" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.95" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.96" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.97" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.98" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.99" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.100" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.101" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.102" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="2000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.103" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="2000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.104" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="2000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.105" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="9000" rttvar="9000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.106" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.107" addrtype="ipv4"/>
+<address addr="192.168.11.7" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="8000" rttvar="8000" to="100000"/>
+<times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.108" addrtype="ipv4"/>
+<address addr="192.168.11.8" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="8000" rttvar="8000" to="100000"/>
+<times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.109" addrtype="ipv4"/>
+<address addr="192.168.11.9" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="7000" rttvar="7000" to="100000"/>
+<times srtt="0" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.110" addrtype="ipv4"/>
+<address addr="192.168.11.10" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="7000" rttvar="7000" to="100000"/>
+<times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.111" addrtype="ipv4"/>
+<address addr="192.168.11.11" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="7000" rttvar="7000" to="100000"/>
+<times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.112" addrtype="ipv4"/>
+<address addr="192.168.11.12" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="4000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.113" addrtype="ipv4"/>
+<address addr="192.168.11.13" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
+<times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.114" addrtype="ipv4"/>
+<address addr="192.168.11.14" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="4000" rttvar="5000" to="100000"/>
+<times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.115" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.116" addrtype="ipv4"/>
+<address addr="192.168.11.15" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="3000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.117" addrtype="ipv4"/>
+<address addr="192.168.11.16" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="3000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.118" addrtype="ipv4"/>
+<address addr="192.168.11.17" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
+<times srtt="1000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.119" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.120" addrtype="ipv4"/>
-<hostnames>
-</hostnames>
-<times srtt="3000" rttvar="5000" to="100000"/>
-</host>
-<host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.121" addrtype="ipv4"/>
+<address addr="192.168.11.18" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.122" addrtype="ipv4"/>
+<address addr="192.168.11.19" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="3000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.20" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="3000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.21" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.22" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.123" addrtype="ipv4"/>
+<address addr="192.168.11.23" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.124" addrtype="ipv4"/>
+<address addr="192.168.11.24" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="2000" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="syn-ack" reason_ttl="0"/>
-<address addr="192.168.11.125" addrtype="ipv4"/>
+<address addr="192.168.11.25" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 <times srtt="2000" rttvar="5000" to="100000"/>
 </host>
-<runstats><finished time="1782896589" timestr="Wed Jul  1 16:03:09 2026" summary="Nmap done at Wed Jul  1 16:03:09 2026; 256 IP addresses (42 hosts up) scanned in 2.45 seconds" elapsed="2.45" exit="success"/><hosts up="42" down="214" total="256"/>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.26" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.27" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.28" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.29" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.30" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.31" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.32" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.33" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.34" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.35" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.36" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="3000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.37" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.38" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.39" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.40" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.41" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.42" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.43" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.44" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="2000" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.11.45" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="3000" rttvar="5000" to="100000"/>
+</host>
+<runstats><finished time="1783666639" timestr="Fri Jul 10 13:57:19 2026" summary="Nmap done at Fri Jul 10 13:57:19 2026; 256 IP addresses (40 hosts up) scanned in 18.80 seconds" elapsed="18.80" exit="success"/><hosts up="40" down="216" total="256"/>
 </runstats>
 </nmaprun>

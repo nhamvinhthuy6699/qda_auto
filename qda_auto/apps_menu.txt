@@ -31,6 +31,7 @@
 10|Fix WinRAR Right Click Menu|BAT|fix_winrar_right_click.bat|
 11|Copy Veyon Source|FOLDER|VEYON|C:\APP_DEPLOY\INSTALL\VEYON
 12|Install Veyon Client|BAT|install_veyon_client.bat|
+13|Copy Shutdown Cleanup To Desktop|COPY|shutdown_cleanup.bat|PUBLIC_DESKTOP
 
 # Ví dụ EXE khác cũng dùng /S /v/qn:
 # 3|App Khac Silent|EXE_SILENT|AppKhac.exe|

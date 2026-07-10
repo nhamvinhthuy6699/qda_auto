@@ -1,60 +1,20 @@
-from flask import Flask, redirect, url_for, render_template_string, flash
-from pathlib import Path
+import os
+import csv
 import subprocess
-import datetime
-import sys
-import webbrowser
-import threading
-import time
+from pathlib import Path
+from datetime import datetime
 
-
-app = Flask(__name__)
-app.secret_key = "qda-control-system-local"
+from flask import Flask, render_template_string, redirect, url_for, flash, jsonify
 
 
 # =========================
-# CONFIG - PORTABLE
+# CONFIG
 # =========================
 
-def get_app_root():
-    """
-    Portable path resolver.
+APP = Flask(__name__)
+APP.secret_key = "qda-control-system"
 
-    Case 1: Run by Python:
-        python app.py
-
-        It will search current folder and parent folders
-        until it finds qda_auto.
-
-    Case 2: Build to QDA_Web.exe:
-        It will use the folder containing QDA_Web.exe.
-
-    Example:
-        D:\\datn\\QDA_Web.exe
-        D:\\datn\\qda_auto
-
-        => QDA_BASE = D:\\datn\\qda_auto
-    """
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).resolve().parent
-
-    current = Path(__file__).resolve().parent
-
-    candidates = [
-        current,
-        current.parent,
-        current.parent.parent,
-    ]
-
-    for folder in candidates:
-        if (folder / "qda_auto").exists():
-            return folder
-
-    return current
-
-
-APP_ROOT = get_app_root()
-QDA_BASE = APP_ROOT / "qda_auto"
+QDA_BASE = Path(r"C:\mywork\qda_auto")
 
 VEYON_MASTER = Path(r"C:\Program Files\Veyon\veyon-master.exe")
 VEYON_CONFIG = Path(r"C:\Program Files\Veyon\veyon-configurator.exe")
@@ -66,9 +26,14 @@ VEYON_CONFIG = Path(r"C:\Program Files\Veyon\veyon-configurator.exe")
 
 MAIN_ACTIONS = {
     "shutdown_menu": {
-        "title": "Menu Shutdown / Restart / Ẩn ổ C",
+        "title": "Menu Shutdown",
         "file": "run_shutdown_tasks.bat",
-        "desc": "Shutdown, restart, bật/tắt ẩn ổ C, kill SEB/QDA."
+        "desc": "Shutdown, kill SEB/QDA."
+    },
+    "exam_mode": {
+        "title": "Exam Mode",
+        "file": "run_exam_mode.bat",
+        "desc": "Bật/tắt chế độ thi."
     },
     "hp_poweron": {
         "title": "HP Power-On",
@@ -92,9 +57,10 @@ MAIN_ACTIONS = {
     }
 }
 
+
 VEYON_ACTIONS = {
     "scan_veyon": {
-        "title": "Scan phòng ra Veyon",
+        "title": "Scan rooms to Veyon",
         "file": "scan_room_to_veyon.bat",
         "desc": "Quét IP/MAC theo rooms.txt và tạo file import Veyon."
     },
@@ -105,89 +71,65 @@ VEYON_ACTIONS = {
     }
 }
 
-ALL_ACTIONS = {}
-ALL_ACTIONS.update(MAIN_ACTIONS)
-ALL_ACTIONS.update(VEYON_ACTIONS)
+
+TASK_ACTIONS = {
+    "install_menu": {
+        "title": "Open QDA install menu",
+        "file": "install.bat",
+        "desc": "Chạy menu cài đặt theo apps_menu.txt."
+    }
+}
+
+
+POWER_ACTIONS = {
+    "shutdown": {
+        "title": "Shutdown",
+        "file": "run_shutdown_tasks.bat",
+        "desc": "Menu shutdown/cleanup phòng máy."
+    },
+    "exam_mode": {
+        "title": "Exam Mode",
+        "file": "run_exam_mode.bat",
+        "desc": "Bật/tắt chế độ thi."
+    },
+    "hp_poweron": {
+        "title": "HP Power-On",
+        "file": "run_hp_poweron_tasks.bat",
+        "desc": "Set BIOS HP tự bật máy."
+    },
+    "dell_poweron": {
+        "title": "Dell Power-On",
+        "file": "run_dell_poweron_tasks.bat",
+        "desc": "Set BIOS Dell tự bật máy."
+    }
+}
 
 
 # =========================
-# HELPER FUNCTIONS
+# HELPERS
 # =========================
 
-def run_bat(file_name: str):
-    path = QDA_BASE / file_name
+def count_clients():
+    clients_file = QDA_BASE / "clients.txt"
 
-    if not path.exists():
-        return False, f"Không tìm thấy file: {path}"
-
-    try:
-        subprocess.Popen(
-            ["cmd.exe", "/c", "start", "", str(path)],
-            cwd=str(QDA_BASE),
-            shell=False
-        )
-        return True, f"Đã chạy: {file_name}"
-    except Exception as e:
-        return False, f"Lỗi chạy {file_name}: {e}"
-
-
-def launch_exe(path: Path, run_as_admin=False):
-    if not path.exists():
-        return False, f"Không tìm thấy: {path}"
+    if not clients_file.exists():
+        return 0
 
     try:
-        if run_as_admin:
-            subprocess.Popen(
-                [
-                    "powershell.exe",
-                    "-NoProfile",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-Command",
-                    f"Start-Process -FilePath '{str(path)}' -Verb RunAs"
-                ],
-                shell=False
-            )
-        else:
-            subprocess.Popen(
-                [str(path)],
-                cwd=str(path.parent),
-                shell=False
-            )
-
-        return True, f"Đã mở: {path}"
-    except Exception as e:
-        return False, f"Lỗi mở {path}: {e}"
+        lines = clients_file.read_text(encoding="utf-8", errors="ignore").splitlines()
+        return len([
+            line for line in lines
+            if line.strip() and not line.strip().startswith("#")
+        ])
+    except Exception:
+        return 0
 
 
-def open_path(path: Path):
+def read_file(path, max_chars=8000):
+    path = Path(path)
+
     if not path.exists():
-        return False, f"Không tìm thấy: {path}"
-
-    try:
-        if path.is_file():
-            suffix = path.suffix.lower()
-
-            if suffix == ".exe":
-                return launch_exe(path)
-
-            if suffix in [".txt", ".log", ".csv", ".bat", ".ps1"]:
-                subprocess.Popen(["notepad.exe", str(path)], shell=False)
-                return True, f"Đã mở: {path}"
-
-        subprocess.Popen(
-            ["explorer.exe", str(path)],
-            shell=False
-        )
-        return True, f"Đã mở: {path}"
-
-    except Exception as e:
-        return False, f"Lỗi mở {path}: {e}"
-
-
-def read_file(path: Path, max_chars=20000):
-    if not path.exists():
-        return f"Không tìm thấy file: {path}"
+        return f"[MISSING] {path}"
 
     try:
         text = path.read_text(encoding="utf-8", errors="ignore")
@@ -195,22 +137,51 @@ def read_file(path: Path, max_chars=20000):
             return text[-max_chars:]
         return text
     except Exception as e:
-        return f"Lỗi đọc file: {e}"
+        return f"[ERROR] {path}: {e}"
 
 
-def count_clients():
-    clients = QDA_BASE / "clients.txt"
-    if not clients.exists():
-        return 0
+def run_bat_file(filename):
+    path = QDA_BASE / filename
 
-    lines = clients.read_text(encoding="utf-8", errors="ignore").splitlines()
-    return len([x for x in lines if x.strip() and not x.strip().startswith("#")])
+    if not path.exists():
+        flash(f"Không tìm thấy file: {path}", "error")
+        return
+
+    try:
+        subprocess.Popen(
+            ["cmd.exe", "/c", "start", "", str(path)],
+            cwd=str(QDA_BASE),
+            shell=False
+        )
+        flash(f"Đã mở: {path}", "success")
+    except Exception as e:
+        flash(f"Lỗi chạy file: {e}", "error")
 
 
-def get_recent_logs():
+def open_file_or_folder(path):
+    path = Path(path)
+
+    if not path.exists():
+        flash(f"Không tìm thấy: {path}", "error")
+        return
+
+    try:
+        subprocess.Popen(
+            ["cmd.exe", "/c", "start", "", str(path)],
+            cwd=str(path.parent if path.is_file() else path),
+            shell=False
+        )
+        flash(f"Đã mở: {path}", "success")
+    except Exception as e:
+        flash(f"Lỗi mở file/thư mục: {e}", "error")
+
+
+def load_logs():
     files = [
         "shutdown_tasks_success.txt",
         "shutdown_tasks_failed.txt",
+        "exam_mode_success.txt",
+        "exam_mode_failed.txt",
         "hp_poweron_tasks_success.txt",
         "hp_poweron_tasks_failed.txt",
         "dell_poweron_tasks_success.txt",
@@ -219,24 +190,25 @@ def get_recent_logs():
         "install_failed.txt",
     ]
 
-    result = []
+    output = []
+    output.append("===== QDA LOGS =====")
+    output.append(datetime.now().strftime("Updated: %d/%m/%Y %H:%M:%S"))
+    output.append("")
 
-    for name in files:
-        p = QDA_BASE / name
-        result.append({
-            "name": name,
-            "exists": p.exists(),
-            "content": read_file(p, 6000) if p.exists() else "Chưa có file log."
-        })
+    for filename in files:
+        path = QDA_BASE / filename
+        output.append(f"===== {filename} =====")
+        output.append(read_file(path))
+        output.append("")
 
-    return result
+    return "\n".join(output)
 
 
 # =========================
-# HTML
+# TEMPLATE
 # =========================
 
-HTML = """
+BASE_TEMPLATE = r"""
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -250,9 +222,9 @@ HTML = """
 
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
             background: #f3f4f6;
             color: #111827;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
 
         .layout {
@@ -261,52 +233,45 @@ HTML = """
         }
 
         .sidebar {
-            width: 260px;
+            width: 240px;
             background: #111827;
             color: white;
-            padding: 24px;
+            padding: 28px 22px;
             position: fixed;
-            left: 0;
             top: 0;
             bottom: 0;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 32px;
+            left: 0;
         }
 
         .logo {
             width: 48px;
             height: 48px;
+            border-radius: 12px;
             background: #2563eb;
-            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 900;
             font-size: 26px;
-            font-weight: 800;
+            margin-bottom: 14px;
         }
 
-        .brand-title {
-            font-size: 21px;
+        .brand {
+            font-size: 20px;
             font-weight: 800;
-        }
-
-        .brand-sub {
-            color: #9ca3af;
-            font-size: 13px;
+            line-height: 1.25;
+            margin-bottom: 32px;
         }
 
         .nav a {
             display: block;
-            padding: 13px 14px;
-            margin-bottom: 8px;
             color: #d1d5db;
             text-decoration: none;
-            border-radius: 12px;
+            padding: 12px 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .nav a:hover {
@@ -314,135 +279,162 @@ HTML = """
             color: white;
         }
 
-        .main {
-            flex: 1;
-            padding: 28px;
-            margin-left: 260px;
+        .sidebar-footer {
+            position: absolute;
+            bottom: 24px;
+            left: 22px;
+            right: 22px;
+            color: #9ca3af;
+            font-size: 12px;
+            word-break: break-all;
         }
 
-        .top {
+        .content {
+            margin-left: 240px;
+            padding: 26px 28px;
+            width: calc(100% - 240px);
+        }
+
+        .hero {
             background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 22px;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+            border-radius: 22px;
+            padding: 28px 30px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.04);
+            margin-bottom: 28px;
         }
 
-        .top h1 {
+        .hero h1 {
             margin: 0;
-            font-size: 30px;
+            font-size: 34px;
+            font-weight: 850;
         }
 
-        .top p {
-            margin: 8px 0 0 0;
+        .hero p {
+            margin: 10px 0 0;
             color: #6b7280;
+            font-size: 17px;
         }
 
         .cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 22px;
+            gap: 22px;
+            margin-bottom: 28px;
         }
 
         .card {
             background: white;
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+            border-radius: 20px;
+            padding: 24px 26px;
+            min-height: 128px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.04);
         }
 
         .card-title {
             color: #6b7280;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 750;
+            margin-bottom: 14px;
         }
 
         .card-num {
             font-size: 34px;
-            font-weight: 800;
-            margin-top: 8px;
+            font-weight: 850;
+            line-height: 1;
         }
 
-        .panel {
-            background: white;
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 22px;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+        .card-value {
+            font-size: 26px;
+            font-weight: 850;
+            line-height: 1.2;
+            word-break: break-all;
         }
 
-        .panel h2 {
-            margin-top: 0;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(280px, 1fr));
-            gap: 14px;
-        }
-
-        .action {
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 16px;
-            background: #f9fafb;
-        }
-
-        .action h3 {
-            margin: 0 0 8px 0;
-            font-size: 18px;
-        }
-
-        .action p {
-            margin: 0 0 14px 0;
+        .small {
+            margin-top: 10px;
             color: #6b7280;
             font-size: 14px;
         }
 
-        button, .btn {
-            border: 0;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            background: #e5e7eb;
-            color: #111827;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
+        .panel {
+            background: white;
+            border-radius: 22px;
+            padding: 28px 30px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.04);
         }
 
-        button.primary, .btn.primary {
+        .panel h2 {
+            margin: 0 0 24px;
+            font-size: 28px;
+            font-weight: 850;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .action-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 22px;
+            min-height: 155px;
+        }
+
+        .action-card h3 {
+            margin: 0 0 10px;
+            font-size: 21px;
+            font-weight: 850;
+        }
+
+        .action-card p {
+            margin: 0 0 18px;
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+
+        .btn {
+            display: inline-block;
+            border: none;
             background: #2563eb;
             color: white;
-        }
-
-        button.danger, .btn.danger {
-            background: #dc2626;
-            color: white;
-        }
-
-        button:hover, .btn:hover {
-            opacity: 0.9;
-        }
-
-        .messages {
-            margin-bottom: 18px;
-        }
-
-        .msg {
-            padding: 13px 16px;
+            padding: 12px 22px;
             border-radius: 12px;
-            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-gray {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-gray:hover {
+            background: #d1d5db;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
             font-weight: 700;
         }
 
-        .msg.success {
+        .alert.success {
             background: #dcfce7;
             color: #166534;
         }
 
-        .msg.error {
+        .alert.error {
             background: #fee2e2;
             color: #991b1b;
         }
@@ -450,22 +442,20 @@ HTML = """
         pre {
             background: #111827;
             color: #d1d5db;
-            padding: 16px;
-            border-radius: 14px;
-            max-height: 360px;
+            border-radius: 16px;
+            padding: 18px;
             overflow: auto;
-            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.45;
+            min-height: 420px;
         }
 
-        .small {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .footer {
-            color: #6b7280;
-            margin-top: 20px;
-            font-size: 13px;
+        .top-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -473,222 +463,441 @@ HTML = """
 <body>
 <div class="layout">
     <aside class="sidebar">
-        <div class="brand">
-            <div class="logo">Q</div>
-            <div>
-                <div class="brand-title">QDA</div>
-                <div class="brand-sub">Control System</div>
-            </div>
-        </div>
+        <div class="logo">Q</div>
+        <div class="brand">QDA<br>Control System</div>
 
-        <div class="nav">
-            <a href="/">Dashboard</a>
-            <a href="/logs">Logs</a>
-            <a href="/open/qda_folder">Mở thư mục QDA</a>
-            <a href="/open/installers">Mở INSTALLERS</a>
-            <a href="/open/rooms">Mở rooms.txt</a>
-            <a href="/open/clients">Mở clients.txt</a>
-            <a href="/open/apps_menu">Mở apps_menu.txt</a>
-            <a href="/open/veyon_master">Mở Veyon Master</a>
-            <a href="/open/veyon_config">Mở Veyon Configurator</a>
+        <nav class="nav">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('veyon') }}">Veyon</a>
+            <a href="{{ url_for('tasks') }}">QDA Tasks</a>
+            <a href="{{ url_for('power') }}">Power / BIOS</a>
+            <a href="{{ url_for('logs') }}">Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            Base:<br>{{ qda_base }}
         </div>
     </aside>
 
-    <main class="main">
-        <div class="top">
-            <h1>QDA Control System</h1>
-            <p>Giao diện điều khiển phòng máy: shutdown, power-on, scan, cài đặt, Veyon và log.</p>
-        </div>
-
+    <main class="content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="messages">
                 {% for category, message in messages %}
-                    <div class="msg {{ category }}">{{ message }}</div>
+                    <div class="alert {{ category }}">{{ message }}</div>
                 {% endfor %}
-                </div>
             {% endif %}
         {% endwith %}
 
-        {% if page == "dashboard" %}
-            <div class="cards">
-                <div class="card">
-                    <div class="card-title">Số máy trong clients.txt</div>
-                    <div class="card-num">{{ clients_count }}</div>
-                    <div class="small">Dựa trên {{ clients_path }}</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">QDA Base</div>
-                    <div style="margin-top: 12px; font-weight: 700; word-break: break-all;">{{ qda_base }}</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Thời gian</div>
-                    <div style="margin-top: 12px; font-weight: 700;">{{ now }}</div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>Thao tác chính</h2>
-
-                <div class="grid">
-                    {% for key, item in main_actions.items() %}
-                    <div class="action">
-                        <h3>{{ item.title }}</h3>
-                        <p>{{ item.desc }}</p>
-                        <form method="post" action="/run/{{ key }}">
-                            <button class="primary" type="submit">Chạy</button>
-                        </form>
-                    </div>
-                    {% endfor %}
-
-                    <div class="action">
-                        <h3>Mở rooms.txt</h3>
-                        <p>File khai báo dải mạng/phòng để scan.</p>
-                        <a class="btn" href="/open/rooms">Mở rooms.txt</a>
-                    </div>
-
-                    <div class="action">
-                        <h3>Mở clients.txt</h3>
-                        <p>Danh sách máy client hiện tại.</p>
-                        <a class="btn" href="/open/clients">Mở clients.txt</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>Veyon</h2>
-
-                <div class="grid">
-                    {% for key, item in veyon_actions.items() %}
-                    <div class="action">
-                        <h3>{{ item.title }}</h3>
-                        <p>{{ item.desc }}</p>
-                        <form method="post" action="/run/{{ key }}">
-                            <button class="primary" type="submit">Chạy</button>
-                        </form>
-                    </div>
-                    {% endfor %}
-
-                    <div class="action">
-                        <h3>Mở Veyon Master</h3>
-                        <p>Quan sát, điều khiển, log off, restart, collect file.</p>
-                        <a class="btn primary" href="/open/veyon_master">Mở Veyon Master</a>
-                    </div>
-
-                    <div class="action">
-                        <h3>Mở Veyon Configurator</h3>
-                        <p>Chỉnh Locations, Computers, Applications, Keys.</p>
-                        <a class="btn" href="/open/veyon_config">Mở Configurator</a>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if page == "logs" %}
-            <div class="panel">
-                <h2>Logs</h2>
-                <p class="small">Hiển thị nhanh các file log chính trong thư mục QDA.</p>
-            </div>
-
-            {% for log in logs %}
-            <div class="panel">
-                <h2>{{ log.name }}</h2>
-                <pre>{{ log.content }}</pre>
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        <div class="footer">
-            QDA Control System v1 - chạy nội bộ trên máy giáo viên/server.
-        </div>
+        {% block content %}{% endblock %}
     </main>
 </div>
+
+<script>
+    function pad2(n) {
+        return String(n).padStart(2, "0");
+    }
+
+    function formatClock(date) {
+        const day = pad2(date.getDate());
+        const month = pad2(date.getMonth() + 1);
+        const year = date.getFullYear();
+
+        const hour = pad2(date.getHours());
+        const minute = pad2(date.getMinutes());
+        const second = pad2(date.getSeconds());
+
+        return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+    }
+
+    function updateClock() {
+        const systemTime = document.getElementById("system-time");
+
+        if (systemTime) {
+            systemTime.textContent = formatClock(new Date());
+        }
+    }
+
+    async function refreshDashboardData() {
+        try {
+            const res = await fetch("/api/status", {
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                return;
+            }
+
+            const data = await res.json();
+
+            const clientsCount = document.getElementById("clients-count");
+            const clientsDesc = document.getElementById("clients-desc");
+            const qdaBase = document.getElementById("qda-base");
+
+            if (clientsCount) {
+                clientsCount.textContent = data.clients_count;
+            }
+
+            if (clientsDesc) {
+                clientsDesc.textContent = "Dựa trên " + data.qda_base + "\\clients.txt";
+            }
+
+            if (qdaBase) {
+                qdaBase.textContent = data.qda_base;
+            }
+        } catch (e) {
+            console.log("Dashboard refresh error:", e);
+        }
+    }
+
+    updateClock();
+    refreshDashboardData();
+
+    setInterval(updateClock, 1000);
+    setInterval(refreshDashboardData, 3000);
+</script>
+
 </body>
 </html>
 """
+
+
+DASHBOARD_TEMPLATE = r"""
+{% extends "base" %}
+
+{% block content %}
+<div class="hero">
+    <h1>QDA Control System</h1>
+    <p>Giao diện điều khiển phòng máy: shutdown, power-on, scan, cài đặt, Veyon và log.</p>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <div class="card-title">Số máy trong clients.txt</div>
+        <div class="card-num" id="clients-count">{{ clients_count }}</div>
+        <div class="small" id="clients-desc">Dựa trên {{ qda_base }}\clients.txt</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">QDA Base</div>
+        <div class="card-value" id="qda-base">{{ qda_base }}</div>
+        <div class="small">Thư mục nguồn đang dùng</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Cập nhật hệ thống</div>
+        <div class="card-value" id="system-time">{{ now }}</div>
+        <div class="small">Thời gian update hiện tại</div>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Thao tác chính</h2>
+
+    <div class="actions-grid">
+        {% for key, item in actions.items() %}
+        <div class="action-card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+            <a class="btn" href="{{ url_for('run_action', group='main', key=key) }}">Chạy</a>
+        </div>
+        {% endfor %}
+
+        <div class="action-card">
+            <h3>Mở rooms.txt</h3>
+            <p>File khai báo dải mạng/phòng để scan.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='rooms') }}">Mở rooms.txt</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở clients.txt</h3>
+            <p>Danh sách máy client hiện tại.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='clients') }}">Mở clients.txt</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+"""
+
+
+VEYON_TEMPLATE = r"""
+{% extends "base" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Veyon</h1>
+    <p>Scan, import, mở Veyon Master và Configurator.</p>
+</div>
+
+<div class="panel">
+    <h2>Veyon Actions</h2>
+
+    <div class="actions-grid">
+        {% for key, item in actions.items() %}
+        <div class="action-card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+            <a class="btn" href="{{ url_for('run_action', group='veyon', key=key) }}">Chạy</a>
+        </div>
+        {% endfor %}
+
+        <div class="action-card">
+            <h3>Mở Veyon Master</h3>
+            <p>Quan sát, điều khiển, collect file.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='veyon_master') }}">Mở</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở Veyon Configurator</h3>
+            <p>Cấu hình location, computer, authentication.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='veyon_config') }}">Mở</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở rooms.txt</h3>
+            <p>File khai báo phòng/dải mạng.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='rooms') }}">Mở rooms.txt</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở clients.txt</h3>
+            <p>Danh sách IP client hiện tại.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='clients') }}">Mở clients.txt</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+"""
+
+
+TASKS_TEMPLATE = r"""
+{% extends "base" %}
+
+{% block content %}
+<div class="hero">
+    <h1>QDA Tasks</h1>
+    <p>Cài đặt phần mềm, mở file cấu hình và thư mục nguồn.</p>
+</div>
+
+<div class="panel">
+    <h2>QDA Tasks</h2>
+
+    <div class="actions-grid">
+        {% for key, item in actions.items() %}
+        <div class="action-card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+            <a class="btn" href="{{ url_for('run_action', group='tasks', key=key) }}">Chạy</a>
+        </div>
+        {% endfor %}
+
+        <div class="action-card">
+            <h3>Mở apps_menu.txt</h3>
+            <p>Chỉnh danh sách task cài đặt.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='apps_menu') }}">Mở apps_menu.txt</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở INSTALLERS</h3>
+            <p>Thư mục chứa source phần mềm.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='installers') }}">Mở INSTALLERS</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở QDA folder</h3>
+            <p>Mở toàn bộ thư mục qda_auto.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='qda_base') }}">Mở folder</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+"""
+
+
+POWER_TEMPLATE = r"""
+{% extends "base" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Power / BIOS</h1>
+    <p>Shutdown, Exam Mode, HP/Dell BIOS Power-On.</p>
+</div>
+
+<div class="panel">
+    <h2>Power / BIOS Actions</h2>
+
+    <div class="actions-grid">
+        {% for key, item in actions.items() %}
+        <div class="action-card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+            <a class="btn" href="{{ url_for('run_action', group='power', key=key) }}">Chạy</a>
+        </div>
+        {% endfor %}
+
+        <div class="action-card">
+            <h3>Mở shutdown success</h3>
+            <p>Danh sách máy chạy shutdown thành công.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='shutdown_success') }}">Mở success</a>
+        </div>
+
+        <div class="action-card">
+            <h3>Mở shutdown failed</h3>
+            <p>Danh sách máy shutdown lỗi.</p>
+            <a class="btn" href="{{ url_for('open_path_route', target='shutdown_failed') }}">Mở failed</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+"""
+
+
+LOGS_TEMPLATE = r"""
+{% extends "base" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Logs</h1>
+    <p>Xem các file kết quả của QDA.</p>
+</div>
+
+<div class="top-actions">
+    <a class="btn" href="{{ url_for('logs') }}">Refresh Logs</a>
+    <a class="btn" href="{{ url_for('open_path_route', target='qda_base') }}">Open QDA folder</a>
+</div>
+
+<pre>{{ logs }}</pre>
+{% endblock %}
+"""
+
+
+# =========================
+# TEMPLATE LOADER
+# =========================
+
+from jinja2 import DictLoader
+
+APP.jinja_loader = DictLoader({
+    "base": BASE_TEMPLATE,
+    "dashboard": DASHBOARD_TEMPLATE,
+    "veyon": VEYON_TEMPLATE,
+    "tasks": TASKS_TEMPLATE,
+    "power": POWER_TEMPLATE,
+    "logs": LOGS_TEMPLATE,
+})
 
 
 # =========================
 # ROUTES
 # =========================
 
-@app.route("/")
+@APP.route("/api/status")
+def api_status():
+    return jsonify({
+        "clients_count": count_clients(),
+        "qda_base": str(QDA_BASE),
+    })
+
+
+@APP.route("/")
 def dashboard():
     return render_template_string(
-        HTML,
-        page="dashboard",
-        main_actions=MAIN_ACTIONS,
-        veyon_actions=VEYON_ACTIONS,
-        clients_count=count_clients(),
+        DASHBOARD_TEMPLATE,
         qda_base=str(QDA_BASE),
-        clients_path=str(QDA_BASE / "clients.txt"),
-        now=datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        clients_count=count_clients(),
+        now=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        actions=MAIN_ACTIONS,
     )
 
 
-@app.route("/logs")
+@APP.route("/veyon")
+def veyon():
+    return render_template_string(
+        VEYON_TEMPLATE,
+        qda_base=str(QDA_BASE),
+        actions=VEYON_ACTIONS,
+    )
+
+
+@APP.route("/tasks")
+def tasks():
+    return render_template_string(
+        TASKS_TEMPLATE,
+        qda_base=str(QDA_BASE),
+        actions=TASK_ACTIONS,
+    )
+
+
+@APP.route("/power")
+def power():
+    return render_template_string(
+        POWER_TEMPLATE,
+        qda_base=str(QDA_BASE),
+        actions=POWER_ACTIONS,
+    )
+
+
+@APP.route("/logs")
 def logs():
     return render_template_string(
-        HTML,
-        page="logs",
-        logs=get_recent_logs(),
-        main_actions=MAIN_ACTIONS,
-        veyon_actions=VEYON_ACTIONS,
-        clients_count=count_clients(),
+        LOGS_TEMPLATE,
         qda_base=str(QDA_BASE),
-        clients_path=str(QDA_BASE / "clients.txt"),
-        now=datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        logs=load_logs(),
     )
 
 
-@app.route("/run/<action>", methods=["POST"])
-def run_action(action):
-    if action not in ALL_ACTIONS:
-        flash("Lệnh không hợp lệ.", "error")
-        return redirect(url_for("dashboard"))
-
-    ok, msg = run_bat(ALL_ACTIONS[action]["file"])
-    flash(msg, "success" if ok else "error")
-    return redirect(url_for("dashboard"))
-
-
-@app.route("/open/<target>")
-def open_target(target):
-    if target == "veyon_master":
-        ok, msg = run_bat("open_veyon_master.bat")
-        flash(msg, "success" if ok else "error")
-        return redirect(url_for("dashboard"))
-
-    if target == "veyon_config":
-        ok, msg = launch_exe(VEYON_CONFIG, run_as_admin=True)
-        flash(msg, "success" if ok else "error")
-        return redirect(url_for("dashboard"))
-
-    targets = {
-        "qda_folder": QDA_BASE,
-        "installers": QDA_BASE / "INSTALLERS",
-        "clients": QDA_BASE / "clients.txt",
-        "rooms": QDA_BASE / "rooms.txt",
-        "apps_menu": QDA_BASE / "apps_menu.txt",
-        "success_log": QDA_BASE / "install_success.txt",
-        "failed_log": QDA_BASE / "install_failed.txt",
+@APP.route("/run/<group>/<key>")
+def run_action(group, key):
+    groups = {
+        "main": MAIN_ACTIONS,
+        "veyon": VEYON_ACTIONS,
+        "tasks": TASK_ACTIONS,
+        "power": POWER_ACTIONS,
     }
 
-    if target not in targets:
-        flash("Mục không hợp lệ.", "error")
+    if group not in groups:
+        flash(f"Nhóm action không hợp lệ: {group}", "error")
         return redirect(url_for("dashboard"))
 
-    ok, msg = open_path(targets[target])
-    flash(msg, "success" if ok else "error")
+    actions = groups[group]
+
+    if key not in actions:
+        flash(f"Action không hợp lệ: {key}", "error")
+        return redirect(url_for("dashboard"))
+
+    filename = actions[key]["file"]
+    run_bat_file(filename)
+
     return redirect(url_for("dashboard"))
 
 
-if __name__ == "__main__":
-    def open_browser():
-        time.sleep(1.5)
-        webbrowser.open("http://127.0.0.1:8088")
+@APP.route("/open/<target>")
+def open_path_route(target):
+    mapping = {
+        "rooms": QDA_BASE / "rooms.txt",
+        "clients": QDA_BASE / "clients.txt",
+        "apps_menu": QDA_BASE / "apps_menu.txt",
+        "installers": QDA_BASE / "INSTALLERS",
+        "qda_base": QDA_BASE,
 
-    threading.Thread(target=open_browser, daemon=True).start()
-    app.run(host="0.0.0.0", port=8088, debug=False)
+        "veyon_master": VEYON_MASTER,
+        "veyon_config": VEYON_CONFIG,
+
+        "shutdown_success": QDA_BASE / "shutdown_tasks_success.txt",
+        "shutdown_failed": QDA_BASE / "shutdown_tasks_failed.txt",
+    }
+
+    if target not in mapping:
+        flash(f"Target không hợp lệ: {target}", "error")
+        return redirect(url_for("dashboard"))
+
+    open_file_or_folder(mapping[target])
+
+    return redirect(url_for("dashboard"))
+
+
+# =========================
+# MAIN
+# =========================
+
+if __name__ == "__main__":
+    APP.run(host="0.0.0.0", port=8088, debug=False)

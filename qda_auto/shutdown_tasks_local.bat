@@ -6,10 +6,7 @@ setlocal EnableDelayedExpansion
 set KILL_APP=%1
 set CLEAR_BIOS=%2
 set DISABLE_STARTUP=%3
-set HIDE_C=%4
-set SHOW_C=%5
-set DO_RESTART=%6
-set DO_SHUTDOWN=%7
+set DO_SHUTDOWN=%4
 
 del C:\shutdown_tasks_log.txt /f /q >nul 2>&1
 del C:\shutdown_tasks_result.txt /f /q >nul 2>&1
@@ -19,24 +16,11 @@ echo START %DATE% %TIME% >> C:\shutdown_tasks_log.txt
 echo KILL_APP=%KILL_APP% >> C:\shutdown_tasks_log.txt
 echo CLEAR_BIOS=%CLEAR_BIOS% >> C:\shutdown_tasks_log.txt
 echo DISABLE_STARTUP=%DISABLE_STARTUP% >> C:\shutdown_tasks_log.txt
-echo HIDE_C=%HIDE_C% >> C:\shutdown_tasks_log.txt
-echo SHOW_C=%SHOW_C% >> C:\shutdown_tasks_log.txt
-echo DO_RESTART=%DO_RESTART% >> C:\shutdown_tasks_log.txt
 echo DO_SHUTDOWN=%DO_SHUTDOWN% >> C:\shutdown_tasks_log.txt
 
 if /I "%KILL_APP%"=="Y" call :KILL_SEB_AND_RESTORE
 if /I "%CLEAR_BIOS%"=="Y" call :CLEAR_BIOS_POWERON
 if /I "%DISABLE_STARTUP%"=="Y" call :DISABLE_STARTUP_APP
-if /I "%HIDE_C%"=="Y" call :HIDE_C_DRIVE
-if /I "%SHOW_C%"=="Y" call :SHOW_C_DRIVE
-
-if /I "%DO_RESTART%"=="Y" (
-    echo SUCCESS > C:\shutdown_tasks_result.txt
-    echo [RESTART] shutdown /r /f /t 0 >> C:\shutdown_tasks_log.txt
-    timeout /t 3 /nobreak >nul
-    shutdown /r /f /t 0
-    exit /b 0
-)
 
 if /I "%DO_SHUTDOWN%"=="Y" (
     echo SUCCESS > C:\shutdown_tasks_result.txt
@@ -301,82 +285,6 @@ if exist "%STARTUP%" (
     del "%STARTUP%\*SEB*.lnk" /f /q >> C:\shutdown_tasks_log.txt 2>&1
     del "%STARTUP%\*safe*.lnk" /f /q >> C:\shutdown_tasks_log.txt 2>&1
     del "%STARTUP%\*exam*.lnk" /f /q >> C:\shutdown_tasks_log.txt 2>&1
-)
-
-exit /b 0
-
-
-:HIDE_C_DRIVE
-echo [4] Hide / block C drive... >> C:\shutdown_tasks_log.txt
-
-reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDrives /t REG_DWORD /d 4 /f >> C:\shutdown_tasks_log.txt 2>&1
-reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoViewOnDrive /t REG_DWORD /d 4 /f >> C:\shutdown_tasks_log.txt 2>&1
-
-call :HIDE_C_FOR_USER admin
-
-reg query "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" >> C:\shutdown_tasks_log.txt 2>&1
-
-echo [4] Hide C done. Need logoff/restart to apply. >> C:\shutdown_tasks_log.txt
-exit /b 0
-
-
-:SHOW_C_DRIVE
-echo [5] Show / unblock C drive... >> C:\shutdown_tasks_log.txt
-
-reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDrives /f >> C:\shutdown_tasks_log.txt 2>&1
-reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoViewOnDrive /f >> C:\shutdown_tasks_log.txt 2>&1
-
-call :SHOW_C_FOR_USER admin
-
-reg query "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" >> C:\shutdown_tasks_log.txt 2>&1
-
-echo [5] Show C done. Need logoff/restart to apply. >> C:\shutdown_tasks_log.txt
-exit /b 0
-
-
-:HIDE_C_FOR_USER
-set "TARGET_USER=%~1"
-set "TARGET_SID="
-
-for /f "delims=" %%S in ('powershell -NoProfile -ExecutionPolicy Bypass -Command "try{(Get-LocalUser '%TARGET_USER%').SID.Value}catch{}" 2^>nul') do set "TARGET_SID=%%S"
-
-if "%TARGET_SID%"=="" (
-    echo [HIDE_C_USER] Cannot get SID for %TARGET_USER%. Skip. >> C:\shutdown_tasks_log.txt
-    exit /b 0
-)
-
-echo [HIDE_C_USER] TARGET_USER=%TARGET_USER% SID=%TARGET_SID% >> C:\shutdown_tasks_log.txt
-
-reg query "HKU\%TARGET_SID%" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-    reg add "HKU\%TARGET_SID%\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDrives /t REG_DWORD /d 4 /f >> C:\shutdown_tasks_log.txt 2>&1
-    reg add "HKU\%TARGET_SID%\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoViewOnDrive /t REG_DWORD /d 4 /f >> C:\shutdown_tasks_log.txt 2>&1
-) else (
-    echo [HIDE_C_USER] User hive not loaded. HKLM will apply after login/restart. >> C:\shutdown_tasks_log.txt
-)
-
-exit /b 0
-
-
-:SHOW_C_FOR_USER
-set "TARGET_USER=%~1"
-set "TARGET_SID="
-
-for /f "delims=" %%S in ('powershell -NoProfile -ExecutionPolicy Bypass -Command "try{(Get-LocalUser '%TARGET_USER%').SID.Value}catch{}" 2^>nul') do set "TARGET_SID=%%S"
-
-if "%TARGET_SID%"=="" (
-    echo [SHOW_C_USER] Cannot get SID for %TARGET_USER%. Skip. >> C:\shutdown_tasks_log.txt
-    exit /b 0
-)
-
-echo [SHOW_C_USER] TARGET_USER=%TARGET_USER% SID=%TARGET_SID% >> C:\shutdown_tasks_log.txt
-
-reg query "HKU\%TARGET_SID%" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-    reg delete "HKU\%TARGET_SID%\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDrives /f >> C:\shutdown_tasks_log.txt 2>&1
-    reg delete "HKU\%TARGET_SID%\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoViewOnDrive /f >> C:\shutdown_tasks_log.txt 2>&1
-) else (
-    echo [SHOW_C_USER] User hive not loaded. HKLM removed, user policy may clear after login/restart. >> C:\shutdown_tasks_log.txt
 )
 
 exit /b 0

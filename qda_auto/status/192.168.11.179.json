@@ -1,0 +1,132 @@
+﻿{
+    "ip":  "192.168.11.179",
+    "computer_name":  "DESKTOP-6424E54",
+    "user":  "DESKTOP-6424E54$",
+    "last_check":  "2026-07-09 14:53:02",
+    "online":  true,
+    "local_script_ok":  true,
+    "os_caption":  "Microsoft Windows 11 Home Single Language",
+    "os_version":  "10.0.26100",
+    "c_drive_free_gb":  400.59,
+    "c_drive_size_gb":  443.68,
+    "veyon_installed":  true,
+    "veyon_path":  "C:\\Program Files\\Veyon\\veyon-service.exe",
+    "veyon_service":  "Running",
+    "seb_installed":  true,
+    "seb_path":  "C:\\Program Files (x86)\\SafeExamBrowser\\SafeExamBrowser.exe",
+    "seb_service":  "Running",
+    "office2016_installed":  true,
+    "office2016_path":  "C:\\Program Files\\Microsoft Office\\Office16\\WINWORD.EXE",
+    "hp_bcu_available":  true,
+    "hp_bcu_path":  "C:\\Windows\\Temp\\NTP_LAB\\HP_BCU\\BiosConfigUtility64.exe",
+    "dell_cctk_available":  false,
+    "dell_cctk_path":  "",
+    "qda_seb_file_exists":  true,
+    "qda_seb_path":  "C:\\Users\\admin\\Desktop\\QDA2026_BQP.seb",
+    "microsoft365_installed":  false,
+    "microsoft365_removed":  true,
+    "microsoft365_evidence":  "",
+    "wifi":  "NotFound",
+    "c_drive_hidden":  false,
+    "c_drive_blocked":  false,
+    "no_drives":  null,
+    "no_view_on_drive":  null,
+    "apps_menu_checks":  [
+                             {
+                                 "id":  "1",
+                                 "name":  "Safe Exam Browser 2.4.1",
+                                 "type":  "EXE_SILENT",
+                                 "installed":  true,
+                                 "check_path":  "C:\\Program Files (x86)\\SafeExamBrowser\\SafeExamBrowser.exe",
+                                 "note":  "Check SEB installed"
+                             },
+                             {
+                                 "id":  "2",
+                                 "name":  "QDA2026_BQP SEB",
+                                 "type":  "COPY",
+                                 "installed":  false,
+                                 "check_path":  "",
+                                 "note":  "Check .seb file on Public Desktop"
+                             },
+                             {
+                                 "id":  "3",
+                                 "name":  "Copy UniKey to Desktop",
+                                 "type":  "COPY",
+                                 "installed":  true,
+                                 "check_path":  "C:\\Users\\Public\\Desktop\\UniKeyNT.exe",
+                                 "note":  "Check UniKeyNT.exe on Public Desktop"
+                             },
+                             {
+                                 "id":  "4",
+                                 "name":  "Copy Office 2016 Source",
+                                 "type":  "FOLDER",
+                                 "installed":  true,
+                                 "check_path":  "C:\\APP_DEPLOY\\INSTALL\\OFFICE2016",
+                                 "note":  "Check Office 2016 source copied"
+                             },
+                             {
+                                 "id":  "5",
+                                 "name":  "Uninstall Office 2016 BAT",
+                                 "type":  "BAT",
+                                 "installed":  true,
+                                 "check_path":  "C:\\APP_DEPLOY\\INSTALL\\uninstall_office2016.bat",
+                                 "note":  "Check uninstall_office2016.bat copied"
+                             },
+                             {
+                                 "id":  "6",
+                                 "name":  "Install Office 2016",
+                                 "type":  "BAT",
+                                 "installed":  true,
+                                 "check_path":  "C:\\Program Files\\Microsoft Office\\Office16\\WINWORD.EXE",
+                                 "note":  "Check Office 2016 installed by WINWORD.EXE"
+                             },
+                             {
+                                 "id":  "7",
+                                 "name":  "Copy ODT Tool",
+                                 "type":  "FOLDER",
+                                 "installed":  true,
+                                 "check_path":  "C:\\APP_DEPLOY\\INSTALL\\ODT",
+                                 "note":  "Check ODT folder/setup.exe copied"
+                             },
+                             {
+                                 "id":  "8",
+                                 "name":  "Remove Microsoft 365 By ODT",
+                                 "type":  "BAT",
+                                 "installed":  true,
+                                 "check_path":  "",
+                                 "note":  "Microsoft 365 removed / not found"
+                             },
+                             {
+                                 "id":  "9",
+                                 "name":  "Install WinRAR",
+                                 "type":  "EXE",
+                                 "installed":  true,
+                                 "check_path":  "C:\\Program Files\\WinRAR\\WinRAR.exe",
+                                 "note":  "Check WinRAR installed"
+                             },
+                             {
+                                 "id":  "10",
+                                 "name":  "Fix WinRAR Right Click Menu",
+                                 "type":  "BAT",
+                                 "installed":  true,
+                                 "check_path":  "C:\\APP_DEPLOY\\INSTALL\\fix_winrar_right_click.bat",
+                                 "note":  "Check fix_winrar_right_click.bat copied"
+                             },
+                             {
+                                 "id":  "11",
+                                 "name":  "Copy Veyon Source",
+                                 "type":  "FOLDER",
+                                 "installed":  true,
+                                 "check_path":  "C:\\APP_DEPLOY\\INSTALL\\VEYON",
+                                 "note":  "Check Veyon source copied"
+                             },
+                             {
+                                 "id":  "12",
+                                 "name":  "Install Veyon Client",
+                                 "type":  "BAT",
+                                 "installed":  true,
+                                 "check_path":  "C:\\Program Files\\Veyon\\veyon-service.exe",
+                                 "note":  "Check Veyon installed"
+                             }
+                         ]
+}
