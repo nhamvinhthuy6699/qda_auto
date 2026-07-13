@@ -1,7 +1,0 @@
-===== IMPORT VEYON CSV ===== 
-START 09/07/2026 15:46:24,85 
-BASE=C:\mywork\qda_auto\ 
-CSV=C:\mywork\qda_auto\veyon_clients.csv 
-IMPORT=C:\mywork\qda_auto\veyon_import.csv 
-CLI=C:\Program Files\Veyon\veyon-cli.exe 
- 

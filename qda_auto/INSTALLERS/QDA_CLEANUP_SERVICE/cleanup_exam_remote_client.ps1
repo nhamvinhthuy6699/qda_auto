@@ -111,13 +111,7 @@ function Test-KeepDesktopItem {
         "UniKeyNT*",
         "VNI*",
         "Vni*",
-        "vni*",
-	"Shutdown_cleanup*",
-	"Shutdown cleanup*",
-	"Shutdown_cleanup.bat"
-	"shutdown_cleanup*",
-	"shutdown cleanup*",
-	"shutdown_cleanup.bat"
+        "vni*"
     )
 
     foreach ($pattern in $keepPatterns) {
@@ -344,7 +338,21 @@ foreach ($profilePath in $profilePaths) {
     $cleanedAny = $true
 }
 
-Clear-RecycleBin-Safe
+$publicDesktop = "C:\Users\Public\Desktop"
+
+if (Test-Path -LiteralPath $publicDesktop) {
+    Write-Line ""
+    Write-Line "=========================================="
+    Write-Line "        CLEAN PUBLIC DESKTOP"
+    Write-Line "=========================================="
+
+    Clear-Desktop-ExtraItems -DesktopPath $publicDesktop
+}
+else {
+    Write-Line "[WARN] Khong thay Public Desktop: $publicDesktop"
+}
+
+# Clear-RecycleBin-Safe
 
 Write-Line ""
 Write-Line "=========================================="

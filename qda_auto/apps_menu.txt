@@ -32,6 +32,9 @@
 11|Copy Veyon Source|FOLDER|VEYON|C:\APP_DEPLOY\INSTALL\VEYON
 12|Install Veyon Client|BAT|install_veyon_client.bat|
 13|Copy Shutdown Cleanup To Desktop|COPY|shutdown_cleanup.bat|PUBLIC_DESKTOP
+14|Copy QDA Cleanup Service Source|FOLDER|QDA_CLEANUP_SERVICE|C:\APP_DEPLOY\INSTALL\QDA_CLEANUP_SERVICE
+15|Install QDA Cleanup Service|BAT|install_qda_cleanup_service.bat|
+16|Uninstall QDA Cleanup Service|BAT|uninstall_qda_cleanup_service.bat|
 
 # Ví dụ EXE khác cũng dùng /S /v/qn:
 # 3|App Khac Silent|EXE_SILENT|AppKhac.exe|
