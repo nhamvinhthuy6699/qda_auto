@@ -4,6 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 from datetime import datetime
+from database import qda_db
 
 from PySide6.QtCore import Qt, QTimer, QProcess
 from PySide6.QtGui import QFont, QIcon
@@ -24,6 +25,8 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QHeaderView,
+    QInputDialog,
+    QAbstractItemView,
 )
 
 
@@ -44,6 +47,15 @@ VEYON_CONFIG = Path(r"C:\Program Files\Veyon\veyon-configurator.exe")
 class QDAApp(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.database_ready = False
+        self.database_error = ""
+
+        try:
+            qda_db.init_db()
+            self.database_ready = True
+        except Exception as exc:
+            self.database_error = str(exc)
 
         self.setWindowTitle("QDA Control System")
 
@@ -957,10 +969,120 @@ class QDAApp(QMainWindow):
         editor_layout.addWidget(self.config_path_label)
         editor_layout.addWidget(self.config_editor, stretch=1)
 
+        # ==============================================
+        # SNAPSHOT DATABASE PANEL
+        # ==============================================
+
+        snapshot_panel = QWidget()
+        snapshot_panel.setMinimumHeight(250)
+        snapshot_panel.setStyleSheet("""
+            QWidget {
+                background-color: white;
+                border-radius: 18px;
+            }
+        """)
+
+        snapshot_layout = QVBoxLayout(snapshot_panel)
+        snapshot_layout.setContentsMargins(16, 16, 16, 16)
+        snapshot_layout.setSpacing(10)
+
+        snapshot_header = QHBoxLayout()
+        snapshot_header.setSpacing(10)
+
+        snapshot_title = QLabel("Config Snapshots")
+        snapshot_title.setFont(QFont("Segoe UI", 15, QFont.Bold))
+        snapshot_title.setStyleSheet("""
+            color: #111827;
+            background: transparent;
+        """)
+
+        self.snapshot_status_label = QLabel(
+            f"Database: {qda_db.DB_PATH}"
+        )
+        self.snapshot_status_label.setStyleSheet("""
+            color: #6b7280;
+            font-size: 12px;
+            background: transparent;
+        """)
+
+        create_snapshot_btn = self.small_button(
+            "Create Snapshot",
+            self.create_current_snapshot
+        )
+
+        view_snapshot_btn = self.small_button(
+            "View",
+            self.view_selected_snapshot,
+            gray=True
+        )
+
+        restore_snapshot_btn = self.small_button(
+            "Restore",
+            self.restore_selected_snapshot
+        )
+
+        delete_snapshot_btn = self.small_button(
+            "Delete",
+            self.delete_selected_snapshots,
+            gray=True
+        )
+
+        refresh_snapshot_btn = self.small_button(
+            "Refresh",
+            self.refresh_snapshot_table,
+            gray=True
+        )
+
+        snapshot_header.addWidget(snapshot_title)
+        snapshot_header.addWidget(
+            self.snapshot_status_label,
+            stretch=1
+        )
+        snapshot_header.addWidget(create_snapshot_btn)
+        snapshot_header.addWidget(view_snapshot_btn)
+        snapshot_header.addWidget(restore_snapshot_btn)
+        snapshot_header.addWidget(delete_snapshot_btn)
+        snapshot_header.addWidget(refresh_snapshot_btn)
+
+        self.snapshot_table = QTableWidget()
+        self.snapshot_table.setColumnCount(5)
+        self.snapshot_table.setHorizontalHeaderLabels([
+            "ID",
+            "Snapshot name",
+            "File",
+            "Created at",
+            "File path",
+        ])
+
+        self.snapshot_table.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch
+        )
+
+        self.snapshot_table.setSelectionBehavior(
+            QTableWidget.SelectRows
+        )
+
+        self.snapshot_table.setSelectionMode(
+            QAbstractItemView.ExtendedSelection
+        )
+
+        self.snapshot_table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
+
+        self.snapshot_table.doubleClicked.connect(
+            self.view_selected_snapshot
+        )
+
+        snapshot_layout.addLayout(snapshot_header)
+        snapshot_layout.addWidget(self.snapshot_table)
+
         layout.addWidget(top)
-        layout.addWidget(editor_panel, stretch=1)
+        layout.addWidget(editor_panel, stretch=3)
+        layout.addWidget(snapshot_panel, stretch=2)
 
         self.load_selected_config()
+        self.refresh_snapshot_table()
 
         return page
 
@@ -1019,6 +1141,9 @@ class QDAApp(QMainWindow):
         except Exception as e:
             self.config_editor.setPlainText(f"[ERROR] Cannot read {path}: {e}")
 
+        if hasattr(self, "snapshot_table"):
+            self.refresh_snapshot_table()
+
     def save_current_config(self):
         if not self.current_config_file:
             QMessageBox.warning(self, "Warning", "No config file loaded.")
@@ -1042,6 +1167,409 @@ class QDAApp(QMainWindow):
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Cannot save file:\n{e}")
+
+    def get_selected_snapshot_ids(self):
+        if not hasattr(self, "snapshot_table"):
+            return []
+
+        rows = {
+            item.row()
+            for item in self.snapshot_table.selectedItems()
+        }
+
+        snapshot_ids = []
+
+        for row in sorted(rows):
+            item = self.snapshot_table.item(row, 0)
+
+            if item is None:
+                continue
+
+            try:
+                snapshot_ids.append(int(item.text()))
+            except ValueError:
+                continue
+
+        return snapshot_ids
+    
+    def refresh_snapshot_table(self):
+        if not hasattr(self, "snapshot_table"):
+            return
+
+        self.snapshot_table.setRowCount(0)
+
+        if not self.database_ready:
+            self.snapshot_status_label.setText(
+                f"Database error: {self.database_error}"
+            )
+            return
+
+        try:
+            file_name = None
+
+            if self.current_config_file:
+                file_name = self.current_config_file.name
+
+            snapshots = qda_db.list_config_snapshots(
+                file_name=file_name,
+                limit=500
+            )
+
+            self.snapshot_table.setRowCount(len(snapshots))
+
+            for row, snapshot in enumerate(snapshots):
+                values = [
+                    snapshot["id"],
+                    snapshot["snapshot_name"],
+                    snapshot["file_name"],
+                    snapshot["created_at"],
+                    snapshot["file_path"],
+                ]
+
+                for column, value in enumerate(values):
+                    item = QTableWidgetItem(str(value))
+
+                    if column == 0:
+                        item.setTextAlignment(Qt.AlignCenter)
+
+                    self.snapshot_table.setItem(
+                        row,
+                        column,
+                        item
+                    )
+
+            target = file_name or "all files"
+
+            self.snapshot_status_label.setText(
+                f"{qda_db.DB_PATH} | "
+                f"{len(snapshots)} snapshot(s) | {target}"
+            )
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self,
+                "Snapshot Error",
+                f"Cannot load snapshots:\n{exc}"
+            )
+
+    def create_current_snapshot(self):
+        if not self.database_ready:
+            QMessageBox.critical(
+                self,
+                "Database Error",
+                self.database_error or
+                "SQLite database is not ready."
+            )
+            return
+
+        if not self.current_config_file:
+            QMessageBox.warning(
+                self,
+                "No File",
+                "Chưa chọn file cấu hình."
+            )
+            return
+
+        if not self.current_config_file.exists():
+            QMessageBox.warning(
+                self,
+                "Missing File",
+                f"Không tìm thấy file:\n"
+                f"{self.current_config_file}"
+            )
+            return
+
+        default_name = (
+            f"{self.current_config_file.name} - "
+            f"{datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        )
+
+        snapshot_name, accepted = QInputDialog.getText(
+            self,
+            "Create Snapshot",
+            (
+                f"File: {self.current_config_file.name}\n\n"
+                "Nhập tên hoặc ghi chú snapshot:"
+            ),
+            text=default_name
+        )
+
+        if not accepted:
+            return
+
+        snapshot_name = snapshot_name.strip()
+
+        if not snapshot_name:
+            QMessageBox.warning(
+                self,
+                "Invalid Name",
+                "Tên snapshot không được để trống."
+            )
+            return
+
+        try:
+            snapshot_id = qda_db.save_config_snapshot(
+                snapshot_name,
+                self.current_config_file
+            )
+
+            self.refresh_snapshot_table()
+
+            QMessageBox.information(
+                self,
+                "Snapshot Created",
+                (
+                    f"Đã lưu snapshot.\n\n"
+                    f"ID: {snapshot_id}\n"
+                    f"Name: {snapshot_name}\n"
+                    f"File: {self.current_config_file.name}"
+                )
+            )
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self,
+                "Snapshot Error",
+                f"Không thể tạo snapshot:\n{exc}"
+            )
+
+    def view_selected_snapshot(self, *_):
+        snapshot_ids = self.get_selected_snapshot_ids()
+
+        if not snapshot_ids:
+            QMessageBox.warning(
+                self,
+                "No Snapshot",
+                "Hãy chọn một snapshot."
+            )
+            return
+
+        snapshot_id = snapshot_ids[0]
+
+        try:
+            snapshot = qda_db.get_snapshot(snapshot_id)
+
+            if not snapshot:
+                QMessageBox.warning(
+                    self,
+                    "Missing Snapshot",
+                    f"Không tìm thấy snapshot #{snapshot_id}."
+                )
+                return
+
+            dialog = QMessageBox(self)
+            dialog.setWindowTitle(
+                f"Snapshot #{snapshot_id}"
+            )
+
+            dialog.setText(
+                (
+                    f"Name: {snapshot['snapshot_name']}\n"
+                    f"File: {snapshot['file_name']}\n"
+                    f"Created: {snapshot['created_at']}"
+                )
+            )
+
+            dialog.setDetailedText(snapshot["content"])
+            dialog.setStandardButtons(QMessageBox.Ok)
+            dialog.exec()
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self,
+                "Snapshot Error",
+                f"Không thể đọc snapshot:\n{exc}"
+            )
+
+    def restore_selected_snapshot(self):
+        snapshot_ids = self.get_selected_snapshot_ids()
+
+        if not snapshot_ids:
+            QMessageBox.warning(
+                self,
+                "No Snapshot",
+                "Hãy chọn một snapshot để restore."
+            )
+            return
+
+        if len(snapshot_ids) != 1:
+            QMessageBox.warning(
+                self,
+                "Invalid Selection",
+                "Chỉ chọn một snapshot khi restore."
+            )
+            return
+
+        snapshot_id = snapshot_ids[0]
+
+        try:
+            snapshot = qda_db.get_snapshot(snapshot_id)
+
+            if not snapshot:
+                QMessageBox.warning(
+                    self,
+                    "Missing Snapshot",
+                    f"Không tìm thấy snapshot #{snapshot_id}."
+                )
+                return
+
+            answer = QMessageBox.question(
+                self,
+                "Restore Snapshot",
+                (
+                    f"Bạn có chắc muốn restore?\n\n"
+                    f"ID: {snapshot['id']}\n"
+                    f"Name: {snapshot['snapshot_name']}\n"
+                    f"File: {snapshot['file_name']}\n"
+                    f"Created: {snapshot['created_at']}\n\n"
+                    "Nội dung file hiện tại sẽ bị thay thế."
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+
+            if answer != QMessageBox.Yes:
+                return
+
+            restored_path = (
+                qda_db.restore_config_snapshot(snapshot_id)
+            )
+
+            if (
+                self.current_config_file and
+                restored_path.name ==
+                self.current_config_file.name
+            ):
+                self.current_config_file = restored_path
+                self.load_selected_config()
+
+            if restored_path.name.lower() in [
+                "clients.txt",
+                "rooms.txt",
+                "veyon_import.csv",
+                "veyon_clients.csv",
+            ]:
+                self.load_inventory()
+                self.refresh_dashboard_data()
+
+            QMessageBox.information(
+                self,
+                "Snapshot Restored",
+                f"Đã restore vào:\n{restored_path}"
+            )
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self,
+                "Restore Error",
+                f"Không thể restore snapshot:\n{exc}"
+            )
+
+    def delete_selected_snapshots(self):
+        selected_ids = self.get_selected_snapshot_ids()
+
+        # Có chọn dòng: xóa các ID đã chọn.
+        if selected_ids:
+            answer = QMessageBox.question(
+                self,
+                "Delete Snapshots",
+                (
+                    f"Xóa {len(selected_ids)} snapshot?\n\n"
+                    f"IDs: {', '.join(map(str, selected_ids))}"
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+
+            if answer != QMessageBox.Yes:
+                return
+
+            try:
+                deleted_count = 0
+
+                for snapshot_id in selected_ids:
+                    deleted_count += (
+                        qda_db.delete_config_snapshot(
+                            snapshot_id
+                        )
+                    )
+
+                self.refresh_snapshot_table()
+
+                QMessageBox.information(
+                    self,
+                    "Snapshots Deleted",
+                    f"Đã xóa: {deleted_count} snapshot."
+                )
+
+            except Exception as exc:
+                QMessageBox.critical(
+                    self,
+                    "Delete Error",
+                    f"Không thể xóa snapshot:\n{exc}"
+                )
+
+            return
+
+        # Không chọn dòng nào: hỏi xóa ALL snapshot
+        # của file đang được mở.
+        if not self.current_config_file:
+            QMessageBox.warning(
+                self,
+                "No File",
+                "Chưa chọn file cấu hình."
+            )
+            return
+
+        file_name = self.current_config_file.name
+
+        answer = QMessageBox.warning(
+            self,
+            "Delete All Snapshots",
+            (
+                "Bạn chưa chọn dòng nào.\n\n"
+                f"Xóa TẤT CẢ snapshot của {file_name}?"
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if answer != QMessageBox.Yes:
+            return
+
+        try:
+            snapshots = qda_db.list_config_snapshots(
+                file_name=file_name,
+                limit=100000
+            )
+
+            deleted_count = 0
+
+            for snapshot in snapshots:
+                deleted_count += (
+                    qda_db.delete_config_snapshot(
+                        snapshot["id"]
+                    )
+                )
+
+            self.refresh_snapshot_table()
+
+            QMessageBox.information(
+                self,
+                "Snapshots Deleted",
+                (
+                    f"Đã xóa toàn bộ snapshot của "
+                    f"{file_name}.\n"
+                    f"Số lượng: {deleted_count}"
+                )
+            )
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self,
+                "Delete Error",
+                f"Không thể xóa snapshot:\n{exc}"
+            )
 
     # =========================
     # ROOMS / CLIENTS
