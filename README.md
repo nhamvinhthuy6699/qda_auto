@@ -241,9 +241,7 @@ Trong menu cài đặt:
 - [QDA Cleanup Service](docs/CLEANUP_SERVICE.md)
 - [HP/Dell BIOS Power-On](docs/BIOS.md)
 - [Kiểm kê client](docs/CLIENT_STATUS.md)
-- [Khắc phục sự cố](docs/TROUBLESHOOTING.md)
-- [Bảo mật và lưu ý vận hành](docs/SECURITY.md)
-- [Lịch sử thay đổi](CHANGELOG.md)
+
 
 ## Phạm vi sử dụng
 
